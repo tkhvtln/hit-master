@@ -7,12 +7,13 @@ public class WaypointCreatorEditor : Editor
     public override void OnInspectorGUI()
     {
         WaypointCreator creator = (WaypointCreator)target;
-
-        GUILayout.BeginHorizontal();
+      
         if (GUILayout.Button("Add waypoint"))
         {
+           
             creator.CreatePlatform();
         }
+        GUILayout.BeginHorizontal();
         if (GUILayout.Button("Remove waypoint"))
         {
             creator.RemovePlatform();

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7022472260516552999}
   - component: {fileID: 2065640505374833780}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Citizen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57,7 +57,7 @@ GameObject:
   - component: {fileID: 5911540121704594421}
   - component: {fileID: 6333253399955283773}
   - component: {fileID: 5303219409010086745}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

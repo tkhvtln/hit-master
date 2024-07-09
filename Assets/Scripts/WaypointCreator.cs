@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -7,6 +8,10 @@ public class WaypointCreator : MonoBehaviour
     #region SERIALIZE FIELD
     [SerializeField] private GameObject _bridgePrefab;
     [SerializeField] private GameObject _platformPrefab;
+
+    [Space]
+    [SerializeField] private bool autoBake = true;
+    [SerializeField] private NavMeshSurface _navMesh;
     #endregion
 
     #region FIELD
@@ -30,6 +35,8 @@ public class WaypointCreator : MonoBehaviour
 
         if (_platformList.Count > 1)
             CreateBridge(_platformList[_platformList.Count - 2], _platformList[_platformList.Count - 1]);
+
+        BakeNavMesh();
     }
 
     public void RemovePlatform()
@@ -44,6 +51,7 @@ public class WaypointCreator : MonoBehaviour
             _previousPositionsList.RemoveAt(_previousPositionsList.Count - 1);
 
             DestroyImmediate(paltform);
+            BakeNavMesh();
         }
     }
 
@@ -58,6 +66,8 @@ public class WaypointCreator : MonoBehaviour
         _bridgeList.Clear();
         _platformList.Clear();
         _previousPositionsList.Clear();
+
+        BakeNavMesh();
     }
     #endregion
 
@@ -96,6 +106,8 @@ public class WaypointCreator : MonoBehaviour
             float distance = Vector3.Distance(position1, position2) - _platformPrefab.transform.localScale.z + 5;
             bridge.transform.localScale = new Vector3(bridge.transform.localScale.x, bridge.transform.localScale.y, distance);
         }
+
+        BakeNavMesh();
     }
 
     private Vector3 GetBridgePosition(GameObject platform)
@@ -105,6 +117,14 @@ public class WaypointCreator : MonoBehaviour
 
         Vector3 position = platform.transform.position + Vector3.up * height / 2;
         return position;
+    }
+    #endregion
+
+    #region NavMesh
+    private void BakeNavMesh()
+    {
+        if (autoBake)
+            _navMesh.BuildNavMesh();
     }
     #endregion
 
@@ -125,7 +145,9 @@ public class WaypointCreator : MonoBehaviour
             }
 
             if (isPositionChanged)
+            {
                 UpdateBridges();
+            }
         }
     }
     #endregion
