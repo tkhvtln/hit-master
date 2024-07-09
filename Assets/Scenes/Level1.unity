@@ -270,8 +270,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4327b65475dde39448533d2206aee52d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bridgePrefab: {fileID: 7590650679470123781, guid: d45a1e2acf25da44b857e571f9091ebf, type: 3}
-  platformPrefab: {fileID: 5544827550015568326, guid: 2e247c6385876ac44911621778bae1c2, type: 3}
+  _bridgePrefab: {fileID: 7590650679470123781, guid: d45a1e2acf25da44b857e571f9091ebf, type: 3}
+  _platformPrefab: {fileID: 5544827550015568326, guid: 2e247c6385876ac44911621778bae1c2, type: 3}
 --- !u!4 &1922276782
 Transform:
   m_ObjectHideFlags: 0

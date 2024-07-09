@@ -5,98 +5,102 @@ using UnityEngine;
 public class WaypointCreator : MonoBehaviour
 {
     #region SERIALIZE FIELD
-    [SerializeField] private GameObject bridgePrefab;
-    [SerializeField] private GameObject platformPrefab;
+    [SerializeField] private GameObject _bridgePrefab;
+    [SerializeField] private GameObject _platformPrefab;
     #endregion
 
     #region FIELD
-    private List<GameObject> platformList = new List<GameObject>();
-    private List<GameObject> bridgeList = new List<GameObject>();
-    private List<Vector3> previousPositionsList = new List<Vector3>();
+    private List<GameObject> _platformList = new List<GameObject>();
+    private List<GameObject> _bridgeList = new List<GameObject>();
+    private List<Vector3> _previousPositionsList = new List<Vector3>();
+    #endregion
+
+    #region CONSTANTS
+    private const int DEFAULT_DISTANCE_BETWEEN_PLATFORMS = 50;
     #endregion
 
     #region PLATFORM
     public void CreatePlatform()
     {
-        Vector3 position = new Vector3(0, 0, platformList.Count * 2);
-        GameObject platform = Instantiate(platformPrefab, position, Quaternion.identity, transform);
+        Vector3 position = new Vector3(0, 0, _platformList.Count * DEFAULT_DISTANCE_BETWEEN_PLATFORMS);
+        GameObject platform = Instantiate(_platformPrefab, position, Quaternion.identity, transform);
 
-        platformList.Add(platform);
-        previousPositionsList.Add(platform.transform.position);
+        _platformList.Add(platform);
+        _previousPositionsList.Add(platform.transform.position);
 
-        if (platformList.Count > 1)
-            CreateBridge(platformList[platformList.Count - 2], platformList[platformList.Count - 1]);
+        if (_platformList.Count > 1)
+            CreateBridge(_platformList[_platformList.Count - 2], _platformList[_platformList.Count - 1]);
     }
 
     public void RemovePlatform()
     {
-        if (platformList.Count > 0)
+        if (_platformList.Count > 0)
         {
             RemoveBridge();
 
-            GameObject item = platformList[platformList.Count - 1];
+            GameObject paltform = _platformList[_platformList.Count - 1];
 
-            platformList.RemoveAt(platformList.Count - 1);
-            previousPositionsList.RemoveAt(previousPositionsList.Count - 1);
+            _platformList.RemoveAt(_platformList.Count - 1);
+            _previousPositionsList.RemoveAt(_previousPositionsList.Count - 1);
 
-            DestroyImmediate(item);
+            DestroyImmediate(paltform);
         }
     }
 
     public void RemoveAllPlatforms()
     {
-        foreach (GameObject item in platformList)
-            DestroyImmediate(item);
+        foreach (GameObject paltform in _platformList)
+            DestroyImmediate(paltform);
 
-        foreach (GameObject item in bridgeList)
-            DestroyImmediate(item);
+        foreach (GameObject paltform in _bridgeList)
+            DestroyImmediate(paltform);
 
-        bridgeList.Clear();
-        platformList.Clear();
-        previousPositionsList.Clear();
+        _bridgeList.Clear();
+        _platformList.Clear();
+        _previousPositionsList.Clear();
     }
     #endregion
 
     #region BRIDGE
     private void CreateBridge(GameObject platform1, GameObject platform2)
     {
-        GameObject bridge = Instantiate(bridgePrefab, transform);
-        bridgeList.Add(bridge);
+        GameObject bridge = Instantiate(_bridgePrefab, transform);
+        _bridgeList.Add(bridge);
 
         UpdateBridges();
     }
 
     private void RemoveBridge()
     {
-        if (bridgeList.Count > 0)
+        if (_bridgeList.Count > 0)
         {
-            GameObject item = bridgeList[bridgeList.Count - 1];
-            bridgeList.RemoveAt(bridgeList.Count - 1);
+            GameObject bridge = _bridgeList[_bridgeList.Count - 1];
+            _bridgeList.RemoveAt(_bridgeList.Count - 1);
 
-            DestroyImmediate(item);
+            DestroyImmediate(bridge);
         }
     }
 
     private void UpdateBridges()
     {
-        for (int i = 0; i < bridgeList.Count; i++)
+        for (int i = 0; i < _bridgeList.Count; i++)
         {
-            GameObject bridge = bridgeList[i];
+            GameObject bridge = _bridgeList[i];
 
-            Vector3 position1 = GetBridgePosition(platformList[i]);
-            Vector3 position2 = GetBridgePosition(platformList[i + 1]);
+            Vector3 position1 = GetBridgePosition(_platformList[i]);
+            Vector3 position2 = GetBridgePosition(_platformList[i + 1]);
 
             bridge.transform.position = (position1 + position2) / 2;
             bridge.transform.LookAt(position2);
 
-            float distance = Vector3.Distance(position1, position2);
+            float distance = Vector3.Distance(position1, position2) - _platformPrefab.transform.localScale.z + 5;
             bridge.transform.localScale = new Vector3(bridge.transform.localScale.x, bridge.transform.localScale.y, distance);
         }
     }
 
     private Vector3 GetBridgePosition(GameObject platform)
     {
-        float offset = bridgePrefab.transform.localScale.y * 1.25f;
+        float offset = _bridgePrefab.transform.localScale.y + 0.1f;
         float height = platform.transform.localScale.y * 2 - offset;
 
         Vector3 position = platform.transform.position + Vector3.up * height / 2;
@@ -111,12 +115,12 @@ public class WaypointCreator : MonoBehaviour
         {
             bool isPositionChanged = false;
 
-            for (int i = 0; i < platformList.Count; i++)
+            for (int i = 0; i < _platformList.Count; i++)
             {
-                if (platformList[i].transform.position != previousPositionsList[i])
+                if (_platformList[i].transform.position != _previousPositionsList[i])
                 {
                     isPositionChanged = true;
-                    previousPositionsList[i] = platformList[i].transform.position;
+                    _previousPositionsList[i] = _platformList[i].transform.position;
                 }
             }
 

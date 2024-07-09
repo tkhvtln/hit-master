@@ -6,23 +6,24 @@ public class WaypointCreatorEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        WaypointCreator waypointCreator = (WaypointCreator)target;
+        WaypointCreator creator = (WaypointCreator)target;
 
         GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Create waypoint"))
+        if (GUILayout.Button("Add waypoint"))
         {
-            waypointCreator.CreatePlatform();
+            creator.CreatePlatform();
         }
         if (GUILayout.Button("Remove waypoint"))
         {
-            waypointCreator.RemovePlatform();
+            creator.RemovePlatform();
         }
         if (GUILayout.Button("Remove all waypoints"))
         {
-            waypointCreator.RemoveAllPlatforms();
+            creator.RemoveAllPlatforms();
         }
         GUILayout.EndHorizontal();
 
+        GUILayout.Space(10);
         base.OnInspectorGUI();
     }
 }
