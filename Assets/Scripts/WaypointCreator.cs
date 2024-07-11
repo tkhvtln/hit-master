@@ -1,34 +1,34 @@
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
+using Zenject;
 
 [ExecuteInEditMode]
 public class WaypointCreator : MonoBehaviour
 {
+    #region GETTERS
+    public List<Platform> PlatformList => _platformList;
+    #endregion
+
     #region SERIALIZE FIELD
     [SerializeField] private GameObject _bridgePrefab;
-    [SerializeField] private GameObject _platformPrefab;
+    [SerializeField] private Platform _platformPrefab;
 
     [Space]
-    [SerializeField] private bool autoBake = true;
-    [SerializeField] private NavMeshSurface _navMesh;
-    #endregion
+    [SerializeField] private bool _autoBake = true;
+    [SerializeField] private int defaultDistanceBetweenPlatforms = 25;
+    [SerializeField] private NavMeshSurface _navMeshSurface;
 
-    #region FIELD
-    private List<GameObject> _platformList = new List<GameObject>();
-    private List<GameObject> _bridgeList = new List<GameObject>();
-    private List<Vector3> _previousPositionsList = new List<Vector3>();
-    #endregion
-
-    #region CONSTANTS
-    private const int DEFAULT_DISTANCE_BETWEEN_PLATFORMS = 50;
+    [SerializeField] private List<Platform> _platformList = new List<Platform>();
+    [SerializeField] private List<GameObject> _bridgeList = new List<GameObject>();
+    [SerializeField] private List<Vector3> _previousPositionsList = new List<Vector3>();
     #endregion
 
     #region PLATFORM
     public void CreatePlatform()
     {
-        Vector3 position = new Vector3(0, 0, _platformList.Count * DEFAULT_DISTANCE_BETWEEN_PLATFORMS);
-        GameObject platform = Instantiate(_platformPrefab, position, Quaternion.identity, transform);
+        Vector3 position = new Vector3(0, 0, _platformList.Count * defaultDistanceBetweenPlatforms);
+        Platform platform = Instantiate(_platformPrefab, position, Quaternion.identity, transform);
 
         _platformList.Add(platform);
         _previousPositionsList.Add(platform.transform.position);
@@ -45,23 +45,23 @@ public class WaypointCreator : MonoBehaviour
         {
             RemoveBridge();
 
-            GameObject paltform = _platformList[_platformList.Count - 1];
+            Platform paltform = _platformList[_platformList.Count - 1];
 
             _platformList.RemoveAt(_platformList.Count - 1);
             _previousPositionsList.RemoveAt(_previousPositionsList.Count - 1);
 
-            DestroyImmediate(paltform);
+            DestroyImmediate(paltform.gameObject);
             BakeNavMesh();
         }
     }
 
     public void RemoveAllPlatforms()
     {
-        foreach (GameObject paltform in _platformList)
-            DestroyImmediate(paltform);
+        foreach (Platform paltform in _platformList)
+            DestroyImmediate(paltform.gameObject);
 
         foreach (GameObject paltform in _bridgeList)
-            DestroyImmediate(paltform);
+            DestroyImmediate(paltform.gameObject);
 
         _bridgeList.Clear();
         _platformList.Clear();
@@ -69,10 +69,19 @@ public class WaypointCreator : MonoBehaviour
 
         BakeNavMesh();
     }
+
+    private void UpdatePlatforms()
+    {
+        for (int i = 1; i < _platformList.Count; i++)
+        {
+            _platformList[i].transform.LookAt(_platformList[i - 1].transform);
+            _platformList[i].transform.Rotate(0, 180, 0);
+        }
+    }
     #endregion
 
     #region BRIDGE
-    private void CreateBridge(GameObject platform1, GameObject platform2)
+    private void CreateBridge(Platform platform1, Platform platform2)
     {
         GameObject bridge = Instantiate(_bridgePrefab, transform);
         _bridgeList.Add(bridge);
@@ -110,12 +119,12 @@ public class WaypointCreator : MonoBehaviour
         BakeNavMesh();
     }
 
-    private Vector3 GetBridgePosition(GameObject platform)
+    private Vector3 GetBridgePosition(Platform platform)
     {
-        float offset = _bridgePrefab.transform.localScale.y + 0.1f;
-        float height = platform.transform.localScale.y * 2 - offset;
+        float offset = _bridgePrefab.transform.localScale.y * 0.5f;
+        float height = platform.transform.localScale.y * 0.5f - offset;
 
-        Vector3 position = platform.transform.position + Vector3.up * height / 2;
+        Vector3 position = platform.transform.position + Vector3.up * height;
         return position;
     }
     #endregion
@@ -123,8 +132,8 @@ public class WaypointCreator : MonoBehaviour
     #region NavMesh
     private void BakeNavMesh()
     {
-        if (autoBake)
-            _navMesh.BuildNavMesh();
+        if (_autoBake)
+            _navMeshSurface.BuildNavMesh();
     }
     #endregion
 
@@ -146,6 +155,7 @@ public class WaypointCreator : MonoBehaviour
 
             if (isPositionChanged)
             {
+                UpdatePlatforms();
                 UpdateBridges();
             }
         }

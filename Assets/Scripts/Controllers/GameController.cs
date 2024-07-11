@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
@@ -10,6 +11,8 @@ public class GameController : MonoBehaviour
     private SaveController _saveController;
     private PlayerController _playerController;
     private UIController _uiController;
+
+    [Inject] private DiContainer _container;
 
     [Inject]
     private void Construct(SaveController saveController, PlayerController playerController, UIController uIController)
@@ -43,7 +46,7 @@ public class GameController : MonoBehaviour
     public void LoadCurrentLevel() 
     {
         UnloadScene();
-        LoadScene();
+        StartCoroutine(ILoadScene());
     }
 
     public void LoadNextLevel() 
@@ -53,7 +56,7 @@ public class GameController : MonoBehaviour
         _saveController.data.level = ++_saveController.data.level >= SceneManager.sceneCountInBuildSettings ? 1 : _saveController.data.level;
         _saveController.Save();
 
-        LoadScene();
+        StartCoroutine(ILoadScene());
     }
 
     private void LoadScene()
@@ -64,6 +67,9 @@ public class GameController : MonoBehaviour
             SceneManager.LoadSceneAsync(_saveController.data.level, LoadSceneMode.Additive);
         }
 
+        LevelInstaller levelInstaller = GameObject.FindObjectOfType<LevelInstaller>();
+        _container.Inject(levelInstaller);
+
         _uiController.ShowPanelMenu();
     }
 
@@ -73,6 +79,21 @@ public class GameController : MonoBehaviour
         {
             _isSceneLoaded = false;
             SceneManager.UnloadSceneAsync(_saveController.data.level);
+        }
+    }
+
+    private IEnumerator ILoadScene()
+    {
+        if (!_isSceneLoaded)
+        {
+            _isSceneLoaded = true;
+            var asyncOperation = SceneManager.LoadSceneAsync(_saveController.data.level, LoadSceneMode.Additive);
+            yield return asyncOperation;
+
+            LevelController levelInstaller = FindObjectOfType<LevelController>();
+            _playerController.GetLevel(levelInstaller);
+
+            _uiController.ShowPanelMenu();
         }
     }
 }

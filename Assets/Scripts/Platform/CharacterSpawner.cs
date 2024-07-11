@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class CharacterSpawner : MonoBehaviour
 {
-    [SerializeField] 
-    private List<CharacterType> _characterTypeList = new List<CharacterType>();
-    private List<Character> _characterCreatedList = new List<Character>();
+    public List<Character> Characters => _characterCreatedList;
+
+    [SerializeField] private List<CharacterType> _characterTypeList = new List<CharacterType>();
+    [SerializeField] private List<Character> _characterCreatedList = new List<Character>();
 
     private const int OFFSET_RADIUS = 5;
 
@@ -52,11 +53,19 @@ public class CharacterSpawner : MonoBehaviour
     {
         float radius = transform.localScale.x / 2 - OFFSET_RADIUS;
 
-        for (int i = 0; i < _characterCreatedList.Count; i++)
+        if (_characterCreatedList.Count == 1)
         {
-            float angle = (i * Mathf.PI / _characterCreatedList.Count) + (Mathf.PI / 20); 
-            Vector3 spawnPosition = new Vector3(Mathf.Cos(angle) * radius, transform.localScale.y, Mathf.Sin(angle) * radius) + transform.position;
-            _characterCreatedList[i].transform.position = spawnPosition;
+            Vector3 spawnPosition = transform.position + Vector3.up * transform.localScale.y * 0.5f + transform.forward * transform.localScale.z * 0.25f;
+            _characterCreatedList[0].transform.position = spawnPosition;
+        }
+        else
+        {
+            for (int i = 0; i < _characterCreatedList.Count; i++)
+            {
+                float angle = (i * Mathf.PI / (_characterCreatedList.Count - 1)) - (Mathf.PI / 2) + (Mathf.PI / 2);
+                Vector3 spawnPosition = new Vector3(Mathf.Cos(angle) * radius, transform.localScale.y * 0.5f, Mathf.Sin(angle) * radius) + transform.position;
+                _characterCreatedList[i].transform.position = spawnPosition;
+            }
         }
     }
 
