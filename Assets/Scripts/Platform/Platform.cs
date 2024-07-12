@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UniRx;
 using UnityEngine;
@@ -14,9 +12,13 @@ public class Platform : MonoBehaviour
     public void Start()
     {
         foreach (Character character in _characterSpawner.Characters)
+        {
+            character.Init();
+
             character.IsDied
                 .Where(isDeid => isDeid)
                 .Subscribe(_ => CheckAllEnemiesDestroyed());
+        }
     }
 
     private void CheckAllEnemiesDestroyed()

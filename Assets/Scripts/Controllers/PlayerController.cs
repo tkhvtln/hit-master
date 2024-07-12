@@ -8,6 +8,7 @@ using Zenject;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Weapon _weapon;
+    [SerializeField] private Animator _animator;
 
     private NavMeshAgent _agent;
     private Vector3 _targetPosition;
@@ -19,6 +20,14 @@ public class PlayerController : MonoBehaviour
 
     private GameController _gameController;
     private Camera _camera;
+
+    private State _currentState;
+
+    private enum State
+    {
+        IDLE,
+        RUN
+    }
 
     [Inject]
     private void Construct(GameController gameController)
@@ -76,6 +85,8 @@ public class PlayerController : MonoBehaviour
     {
         _agent.isStopped = true;
         _currentPlatform.OnAllEnemiesDied += Move;
+
+        SetAnimation(State.IDLE);
     }
 
     private void Move()
@@ -89,6 +100,8 @@ public class PlayerController : MonoBehaviour
             _targetPosition = GetTargetPosition(_currentPlatform);
             _agent.SetDestination(_targetPosition);
             _agent.isStopped = false;
+
+            SetAnimation(State.RUN);
         }
         else
         {
@@ -114,5 +127,24 @@ public class PlayerController : MonoBehaviour
         targetPosition.y = platform.transform.position.y + platform.transform.localScale.y * 0.5f;
 
         return targetPosition;
+    }
+
+    private void SetAnimation(State state)
+    {
+        if (_currentState == state)
+            return;
+
+        _currentState = state;
+
+        switch (_currentState)
+        {
+            case State.RUN:
+                _animator.SetTrigger(Constants.ANIM_RUN);
+                break;
+
+            default:
+                _animator.SetTrigger(Constants.ANIM_IDLE);
+                break;
+        }
     }
 }

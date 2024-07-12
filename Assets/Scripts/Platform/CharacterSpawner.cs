@@ -8,7 +8,7 @@ public class CharacterSpawner : MonoBehaviour
     [SerializeField] private List<CharacterType> _characterTypeList = new List<CharacterType>();
     [SerializeField] private List<Character> _characterCreatedList = new List<Character>();
 
-    private const int OFFSET_RADIUS = 5;
+    private const int OFFSET_RADIUS = 3;
 
     public void CreateCharacter(CharacterName name)
     {
@@ -18,6 +18,7 @@ public class CharacterSpawner : MonoBehaviour
         {
             Character character = Instantiate(characterPrefab, transform);
             character.transform.localScale = GetIgnoreParentScale();
+            character.transform.LookAt(-transform.forward);
 
             _characterCreatedList.Add(character);
 
