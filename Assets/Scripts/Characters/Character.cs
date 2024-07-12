@@ -1,10 +1,14 @@
 using UniRx;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Character : MonoBehaviour
 {
-    [SerializeField] 
-    protected Animator _animator;
+    protected ReactiveProperty<int> _health = new ReactiveProperty<int>(100);
+
+    [SerializeField] protected Animator _animator;
+    [SerializeField] private Slider _sliderHealth;
+
     protected Rigidbody[] _rbRagdolls;
 
     protected ReactiveProperty<bool> _isDied = new ReactiveProperty<bool>();
@@ -14,10 +18,15 @@ public abstract class Character : MonoBehaviour
     {
         _rbRagdolls = GetComponentsInChildren<Rigidbody>();
         ActivateRagdoll(false);
+
+        _health.Subscribe(x => _sliderHealth.value = (float)x / 100f)
+            .AddTo(this);
     }
 
     public virtual void Die()
     {
+        _sliderHealth.gameObject.SetActive(false);
+
         _isDied.Value = true;
         ActivateRagdoll(true);
     }
@@ -34,7 +43,10 @@ public abstract class Character : MonoBehaviour
     {
         if (other.TryGetComponent(out Projectile projectile))
         {
-            Die();
+            _health.Value -= projectile.Damage;
+
+            if (_health.Value <= 0)
+                Die();
         }
     }
 }

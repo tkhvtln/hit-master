@@ -7,8 +7,9 @@ public class Bullet : Projectile
     private float _speed;
     private float _lifetime;
 
-    public override void Init(float speed, float lifetime)
+    public override void Init(int damage, float speed, float lifetime)
     {
+        _damage = damage;
         _speed = speed;
         _lifetime = lifetime;
 
@@ -32,7 +33,8 @@ public class Bullet : Projectile
             {
                 gameObject.SetActive(false);
                 _transform.localPosition = Vector3.zero;
-            });
+            })
+            .AddTo(this);
     }
 
     private void OnTriggerEnter(Collider other)
