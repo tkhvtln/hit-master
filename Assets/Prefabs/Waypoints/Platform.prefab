@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 512520175697739807}
-  - component: {fileID: 3395778238938000139}
   - component: {fileID: 515968066172413367}
+  - component: {fileID: 3395778238938000139}
   - component: {fileID: 1648981614357231987}
   - component: {fileID: 8354450602617948941}
   - component: {fileID: 5779978615095770184}
@@ -36,6 +36,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &515968066172413367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5544827550015568326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08d3fb493b18a494f9e66401fcb80702, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enemyTypeList:
+  - prefab: {fileID: 4362524061198798073, guid: d2e87899c23eeb44085c6fd79ef484ef, type: 3}
+    isSelected: 1
+  - prefab: {fileID: 6478034534123036033, guid: 57d2468ab2bda9b489b0f2f2239515c8, type: 3}
+    isSelected: 0
+  _enemyCreatedList: []
 --- !u!114 &3395778238938000139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -49,20 +67,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spawnerEnemy: {fileID: 515968066172413367}
---- !u!114 &515968066172413367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5544827550015568326}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08d3fb493b18a494f9e66401fcb80702, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _enemyPrefab: {fileID: 4362524061198798073, guid: d2e87899c23eeb44085c6fd79ef484ef, type: 3}
-  _enemyCreatedList: []
 --- !u!65 &1648981614357231987
 BoxCollider:
   m_ObjectHideFlags: 0

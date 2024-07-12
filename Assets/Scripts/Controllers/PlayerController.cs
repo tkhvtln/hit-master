@@ -3,12 +3,16 @@ using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 using Zenject;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Weapon _weapon;
+    [SerializeField] private PlayerConfig _playerConfig;
+
+    [Space]
     [SerializeField] private Animator _animator;
+    [SerializeField] private Transform _spawnerWeapon;
 
     private NavMeshAgent _agent;
     private Vector3 _targetPosition;
@@ -19,6 +23,8 @@ public class PlayerController : MonoBehaviour
     private List<Platform> _platformList = new List<Platform>();
 
     private GameController _gameController;
+    private Weapon _currentWeapon;
+    private Transform _transform;
     private Camera _camera;
 
     private State _currentState;
@@ -32,13 +38,17 @@ public class PlayerController : MonoBehaviour
     [Inject]
     private void Construct(GameController gameController)
     {
-        _gameController = gameController;
+        _gameController = gameController;   
+        _transform = transform;
         _camera = Camera.main;
 
         _agent = GetComponent<NavMeshAgent>();
+        _agent.speed = _playerConfig.SpeedMove;
         _agent.enabled = false;
 
-        _weapon.Init();
+        _currentWeapon = Instantiate(_playerConfig.CurrentWeapon, _spawnerWeapon.position, _spawnerWeapon.rotation, _spawnerWeapon);
+        _currentWeapon.Init();
+
         SetupSubscriptions();
     }
 
@@ -57,6 +67,11 @@ public class PlayerController : MonoBehaviour
         this.UpdateAsObservable()
             .Where(_ => !_agent.pathPending && _agent.remainingDistance <= 0.1f && !_agent.isStopped)
             .Subscribe(_ => Stop())
+            .AddTo(this);
+
+        this.UpdateAsObservable()
+            .Where(_ => _currentPlatform != null && _gameController.IsGame)
+            .Subscribe(_ => LookAtCenterPlatform(_currentPlatform))
             .AddTo(this);
     }
 
@@ -114,7 +129,7 @@ public class PlayerController : MonoBehaviour
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            _weapon.Shot(hit.point);
+            _currentWeapon.Shot(hit.point);
         }
     }
 
@@ -127,6 +142,16 @@ public class PlayerController : MonoBehaviour
         targetPosition.y = platform.transform.position.y + platform.transform.localScale.y * 0.5f;
 
         return targetPosition;
+    }
+
+    private void LookAtCenterPlatform(Platform platform)
+    {
+        Vector3 platrofmCenter = platform.transform.position;
+        platrofmCenter.y = platform.transform.localScale.y / 2;
+
+        Vector3 dirction = (platrofmCenter - _transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(dirction);
+        _transform.rotation = Quaternion.Slerp(_transform.rotation, lookRotation, Time.deltaTime * _playerConfig.SpeedRotate);
     }
 
     private void SetAnimation(State state)
