@@ -2,10 +2,13 @@ using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class Character : MonoBehaviour
+public abstract class Enemy : MonoBehaviour
 {
-    protected ReactiveProperty<int> _health = new ReactiveProperty<int>(100);
+    protected ReactiveProperty<int> _health;
 
+    [SerializeField] private EnemyConfig _enemyConfig;
+
+    [Space]
     [SerializeField] protected Animator _animator;
     [SerializeField] private Slider _sliderHealth;
 
@@ -16,7 +19,9 @@ public abstract class Character : MonoBehaviour
 
     public virtual void Init()
     {
+        _health = new ReactiveProperty<int>(_enemyConfig.Health);
         _rbRagdolls = GetComponentsInChildren<Rigidbody>();
+
         ActivateRagdoll(false);
 
         _health.Subscribe(x => _sliderHealth.value = (float)x / 100f)

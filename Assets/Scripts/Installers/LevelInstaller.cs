@@ -5,8 +5,6 @@ using Zenject;
 public class LevelInstaller : MonoInstaller
 {
     [SerializeField] private LevelController _levelController;
-
-    [Space]
     [SerializeField] private WaypointCreator _waypointCreator;
     [SerializeField] private NavMeshSurface _navMeshSurface; 
     

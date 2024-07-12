@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbf23f321da63414e922e3d8ab504d35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _characterSpawner: {fileID: 515968066172413367}
+  _spawnerEnemy: {fileID: 515968066172413367}
 --- !u!114 &515968066172413367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,12 +61,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08d3fb493b18a494f9e66401fcb80702, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _characterTypeList:
-  - name: 0
-    prefab: {fileID: 4362524061198798073, guid: d2e87899c23eeb44085c6fd79ef484ef, type: 3}
-  - name: 1
-    prefab: {fileID: 2065640505374833780, guid: 17e0f2f50ea300140860bcb87123e9a0, type: 3}
-  _characterCreatedList: []
+  _enemyPrefab: {fileID: 4362524061198798073, guid: d2e87899c23eeb44085c6fd79ef484ef, type: 3}
+  _enemyCreatedList: []
 --- !u!65 &1648981614357231987
 BoxCollider:
   m_ObjectHideFlags: 0

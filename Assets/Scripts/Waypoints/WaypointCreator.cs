@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
-using Zenject;
 
 [ExecuteInEditMode]
 public class WaypointCreator : MonoBehaviour
@@ -19,6 +18,7 @@ public class WaypointCreator : MonoBehaviour
     [SerializeField] private int defaultDistanceBetweenPlatforms = 25;
     [SerializeField] private NavMeshSurface _navMeshSurface;
 
+    [Space]
     [SerializeField] private List<Platform> _platformList = new List<Platform>();
     [SerializeField] private List<GameObject> _bridgeList = new List<GameObject>();
     [SerializeField] private List<Vector3> _previousPositionsList = new List<Vector3>();
@@ -41,18 +41,18 @@ public class WaypointCreator : MonoBehaviour
 
     public void RemovePlatform()
     {
-        if (_platformList.Count > 0)
-        {
-            RemoveBridge();
+        if (_platformList.Count < 1)
+            return;
 
-            Platform paltform = _platformList[_platformList.Count - 1];
+        RemoveBridge();
 
-            _platformList.RemoveAt(_platformList.Count - 1);
-            _previousPositionsList.RemoveAt(_previousPositionsList.Count - 1);
+        Platform paltform = _platformList[_platformList.Count - 1];
 
-            DestroyImmediate(paltform.gameObject);
-            BakeNavMesh();
-        }
+        _platformList.RemoveAt(_platformList.Count - 1);
+        _previousPositionsList.RemoveAt(_previousPositionsList.Count - 1);
+
+        DestroyImmediate(paltform.gameObject);
+        BakeNavMesh();
     }
 
     public void RemoveAllPlatforms()
@@ -91,13 +91,13 @@ public class WaypointCreator : MonoBehaviour
 
     private void RemoveBridge()
     {
-        if (_bridgeList.Count > 0)
-        {
-            GameObject bridge = _bridgeList[_bridgeList.Count - 1];
-            _bridgeList.RemoveAt(_bridgeList.Count - 1);
+        if (_bridgeList.Count < 1)
+            return;
 
-            DestroyImmediate(bridge);
-        }
+        GameObject bridge = _bridgeList[_bridgeList.Count - 1];
+        _bridgeList.RemoveAt(_bridgeList.Count - 1);
+
+        DestroyImmediate(bridge);
     }
 
     private void UpdateBridges()

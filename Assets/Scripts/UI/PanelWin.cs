@@ -1,21 +1,4 @@
-using UnityEngine;
-using Zenject;
-
-public class PanelWin : MonoBehaviour
+public class PanelWin : PanelUI
 {
-    [Inject]
-    private void Construct() 
-    {
 
-    }
-
-    public void Show() 
-    {
-        gameObject.SetActive(true);
-    }
-
-    public void Hide() 
-    {
-        gameObject.SetActive(false);
-    }
 }

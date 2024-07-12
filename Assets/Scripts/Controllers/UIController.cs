@@ -9,18 +9,16 @@ public class UIController : MonoBehaviour
     private PanelDefeat _panelDefeat;
 
     private GameController _gameController;
-    private SoundController _soundController;
 
     [Inject]
-    private void Construct(PanelMenu panelMenu, PanelGame panelGame, PanelWin panelWin, PanelDefeat panelDefeat, GameController gameController, SoundController soundController) 
+    private void Construct(PanelMenu panelMenu, PanelGame panelGame, PanelWin panelWin, PanelDefeat panelDefeat, GameController gameController) 
     {
         _panelMenu = panelMenu;
         _panelGame = panelGame;
         _panelWin = panelWin;
         _panelDefeat = panelDefeat;
 
-        _gameController = gameController;
-        _soundController = soundController;    
+        _gameController = gameController; 
     }
 
     public void ShowPanelMenu() 
@@ -60,11 +58,6 @@ public class UIController : MonoBehaviour
     public void OnButtonRestartLevel() 
     {
         _gameController.LoadCurrentLevel();
-    }
-
-    public void OnButtonSound()
-    {
-        _soundController.SwitchSound();
     }
 
     public void Clear() 

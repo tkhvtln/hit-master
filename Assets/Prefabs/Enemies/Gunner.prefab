@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 4362524061198798073}
   - component: {fileID: 2783428306194372652}
   m_Layer: 6
-  m_Name: Enemy
+  m_Name: Gunner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -464,9 +464,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6539857568515435781}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2576e7d66b7d1946b35d3d2c2386447, type: 3}
+  m_Script: {fileID: 11500000, guid: e2eedd5503fe31a49bfe0229cd2b8203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enemyConfig: {fileID: 11400000, guid: a553f87eb9e55ce4b9cbc9c39d97c71c, type: 2}
   _animator: {fileID: 4575028635592126515}
   _sliderHealth: {fileID: 2093247046270795515}
 --- !u!65 &2783428306194372652

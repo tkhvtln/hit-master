@@ -7,11 +7,11 @@ public class Platform : MonoBehaviour
 {
     public event Action OnAllEnemiesDied;
 
-    [SerializeField] private CharacterSpawner _characterSpawner;
+    [SerializeField] private SpawnerEnemy _spawnerEnemy;
 
     public void Start()
     {
-        foreach (Character character in _characterSpawner.Characters)
+        foreach (Enemy character in _spawnerEnemy.Characters)
         {
             character.Init();
 
@@ -23,7 +23,7 @@ public class Platform : MonoBehaviour
 
     private void CheckAllEnemiesDestroyed()
     {
-        if (_characterSpawner.Characters.All(character => character.IsDied.Value))
+        if (_spawnerEnemy.Characters.All(character => character.IsDied.Value))
         {
             OnAllEnemiesDied?.Invoke();
         }
